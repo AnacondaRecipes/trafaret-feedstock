@@ -24,7 +24,7 @@ requirements:
 
 test:
   requires:
-    # pymango is listed as an extra package required to use object_id. Currently not available on s390x and arm64, for python 3.11.
+    # pymongo is listed as an extra package required to use object_id. Currently not available on s390x and arm64, for python 3.11.
     - pymongo >=2.4.1  # [not s390x and not (arm64 and py==311)]
     - python-dateutil >=1.5
     - pip
