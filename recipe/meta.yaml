@@ -1,39 +1,42 @@
 {% set name = "trafaret" %}
 {% set version = "2.1.1" %}
-{% set sha256 = "d9d00800318fbd343fdfb3353e947b2ebb5557159c844696c5ac24846f76d41c" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  fn: {{ name }}-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: {{ sha256 }}
+  sha256: d9d00800318fbd343fdfb3353e947b2ebb5557159c844696c5ac24846f76d41c
 
 build:
-  noarch: python
   number: 0
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --ignore-installed --no-build-isolation -vvv
 
 requirements:
   host:
-    - python >=3.6
     - pip
+    - python
+    - setuptools
+    - wheel
   run:
-    - python >=3.6
+    - python
 
 test:
   requires:
-    - pymongo >=2.4.1
+    # pymango is listed as an extra package required to use object_id. Currently not available on s390x and arm64, for python 3.11.
+    - pymongo >=2.4.1  # [not s390x and not (arm64 and py==311)]
     - python-dateutil >=1.5
+    - pip
   imports:
     - trafaret
     - trafaret.constructor
     - trafaret.keys
     - trafaret.utils
-    - trafaret.contrib.object_id
+    - trafaret.contrib.object_id  # [not s390x and not (arm64 and py==311)]
     - trafaret.contrib.rfc_3339
+  commands:
+    - pip check
 
 about:
   home: https://github.com/Deepwalker/trafaret
@@ -41,12 +44,11 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   summary: Ultimate transformation library that supports validation, contexts and aiohttp
-
   description: |
     Trafaret is rigid and powerful lib to work with foreign data, configs etc.
     It provides simple way to check anything, and convert it accordingly to
     your needs.
-  doc_url: http://trafaret.readthedocs.io/en/latest/
+  doc_url: https://trafaret.readthedocs.io/en/latest/
   dev_url: https://github.com/Deepwalker/trafaret
 
 extra:
